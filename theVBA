@@ -1,0 +1,38 @@
+Sub getTract()
+Dim xhrRequest As XMLHTTP60
+base_url = "http://data.fcc.gov/api/block/find?"
+
+finalRecord = 1988 'enter your final record here...lazy!
+
+
+'makes sure to put your worksheet reference here. mine was swdata
+With Worksheets("swdata")
+For x = 2 To finalRecord
+'lat and lng values are in the first two columns
+lat = .Cells(x, 1).Value
+lng = .Cells(x, 2).Value
+
+If Len(lat) > 0 Then
+    'Debug.Print lat & " , " & lng
+    Set xhrRequest = New XMLHTTP60
+    urlstring = base_url & "format=json&" & "latitude=" & lat & "&longitude=" & lng
+    'Debug.Print urlstring
+    xhrRequest.Open "GET", urlstring, False
+    xhrRequest.send
+    If xhrRequest.Status = "200" Then
+       theResult = Split(xhrRequest.responseText, ",")
+       Debug.Print theResult(0)
+       'i am writing the ugly string return to the third column
+       .Cells(x, 3).Value = theResult(0)
+       
+        
+    End If
+    
+    
+End If
+
+
+Next
+End With
+
+End Sub
